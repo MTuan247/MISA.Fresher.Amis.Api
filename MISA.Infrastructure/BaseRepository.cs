@@ -62,7 +62,7 @@ namespace MISA.Infrastructure
         public IEnumerable<TEntity> GetEntitiesFiltered(string EntityCode, int PageNumber, int PageSize)
         {
             var sqlCommand = $"Select * from {className} " +
-               $"where and {className}Code like @{className}Code " +
+               $"where {className}Code like @{className}Code " +
                $"ORDER BY {className}Code " +
                $"LiMIT @Limit " +
                $"OFFSET @Offset";
@@ -85,7 +85,7 @@ namespace MISA.Infrastructure
         /// <returns></returns>
         /// CreatedBy: NMTuan (30/07/2021)
         /// ModifiedBy: NMTuan (02/08/2021)
-        public TEntity GetEntityById(Guid entityId)
+        public virtual TEntity GetEntityById(Guid entityId)
         {
             //var sql = $"SELECT * FROM {className} WHERE {className}Id = @{className}Id";
 
@@ -98,7 +98,27 @@ namespace MISA.Infrastructure
         }
 
         /// <summary>
-        /// Lấy bản ghi theo mã nhân viên
+        /// Hàm lấy bản ghi theo danh sách các id
+        /// </summary>
+        /// <param name="entityIds"></param>
+        /// <returns></returns>
+        /// CreatedBy: NMTuan (21/09/2021)
+        /// ModifiedBy: NMTuan (21/09/2021)
+        public IEnumerable<TEntity> GetEntitiesByIds(Guid[] entityIds)
+        {
+            var sql = $"SELECT * FROM {className} " +
+               $"WHERE {className}Id in @EntityIds";
+
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add($"@EntityIds", entityIds);
+            var entities = _dbConnection.Query<TEntity>(sql, parameters);
+
+
+            return entities;
+        }
+
+        /// <summary>
+        /// Lấy bản ghi theo mã
         /// </summary>
         /// <param name="entityCode"></param>
         /// <returns></returns>
@@ -183,7 +203,7 @@ namespace MISA.Infrastructure
         /// <returns></returns>
         /// CreatedBy: NMTuan (30/07/2021)
         /// ModifiedBy: NMTuan (02/08/2021)
-        public int Add(TEntity entity)
+        public virtual int Add(TEntity entity)
         {
             var sql = $"Proc_Insert{className}";
 
@@ -201,7 +221,7 @@ namespace MISA.Infrastructure
         /// <returns></returns>
         /// CreatedBy: NMTuan (30/07/2021)
         /// ModifiedBy: NMTuan (02/08/2021)
-        public int Update(TEntity entity)
+        public virtual int Update(TEntity entity)
         {
             var sql = $"Proc_Update{className}";
 
@@ -221,13 +241,15 @@ namespace MISA.Infrastructure
         /// ModifiedBy: NMTuan (02/08/2021)
         public int Delete(Guid entityId)
         {
-            var sqlCommand = $"DELETE FROM {className} WHERE {className}Id= @{className}Id ";
+            //var sqlCommand = $"DELETE FROM {className} WHERE {className}Id= @{className}Id ";
+
+            var sqlCommand = $"Proc_Delete{className}ById";
 
             DynamicParameters parameters = new DynamicParameters();
 
             parameters.Add($"@{className}Id", entityId);
 
-            var res = _dbConnection.Execute(sqlCommand, parameters);
+            var res = _dbConnection.Execute(sqlCommand, parameters, commandType: CommandType.StoredProcedure);
 
             return res;
         }
@@ -257,7 +279,6 @@ namespace MISA.Infrastructure
 
                 return res;
             }
-
         }
 
         /// <summary>
@@ -267,12 +288,18 @@ namespace MISA.Infrastructure
         /// <returns></returns>
         /// CreatedBy: NMTuan (30/07/2021)
         /// ModifiedBy: NMTuan (02/08/2021)
-        protected DynamicParameters MappingObtype(TEntity entity)
+        protected virtual DynamicParameters MappingObtype(TEntity entity)
         {
             var properties = entity.GetType().GetProperties();
             var parameters = new DynamicParameters();
             foreach (var property in properties)
             {
+                // Kiểm tra prop có thuộc tính bỏ qua khi map
+                var propOver = property.GetCustomAttributes(typeof(MISAOverMapping), true);
+                if (propOver.Length > 0)
+                {
+                    continue;
+                }
                 var propertyName = property.Name;
                 var propertyValue = property.GetValue(entity);
                 var propertyType = property.PropertyType;
@@ -287,6 +314,39 @@ namespace MISA.Infrastructure
             }
             return parameters;
         }
+
+        /// <summary>
+        /// Hàm map data theo object
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="parameters"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        protected DynamicParameters MappingObtype(TEntity entity, DynamicParameters parameters, int index)
+        {
+            var properties = entity.GetType().GetProperties();
+            foreach (var property in properties)
+            {
+                // Kiểm tra prop có thuộc tính bỏ qua khi map
+                var propOver = property.GetCustomAttributes(typeof(MISAOverMapping), true);
+                if (propOver.Length > 0)
+                {
+                    continue;
+                }
+                var propertyName = property.Name;
+                var propertyValue = property.GetValue(entity);
+                var propertyType = property.PropertyType;
+                if (propertyType == typeof(Guid) || propertyType == typeof(Guid?))
+                {
+                    parameters.Add($"@{propertyName}{index}", propertyValue, DbType.String);
+                }
+                else
+                {
+                    parameters.Add($"@{propertyName}{index}", propertyValue);
+                }
+            }
+            return parameters;
+        } 
         #endregion
     }
 }

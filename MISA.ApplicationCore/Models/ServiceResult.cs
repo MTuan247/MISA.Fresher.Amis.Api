@@ -1,4 +1,5 @@
-﻿using MISA.ApplicationCore.Properties;
+﻿using MISA.ApplicationCore.Enums;
+using MISA.ApplicationCore.Properties;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace MISA.ApplicationCore.Models
         /// <summary>
         /// StatusCode trả về
         /// </summary>
-        public int StatusCode { get; set; }
+        public StatusCode StatusCode { get; set; }
         /// <summary>
         /// Mã lỗi trả về
         /// </summary>
@@ -45,7 +46,7 @@ namespace MISA.ApplicationCore.Models
         public void ExceptionHandle(Exception ex)
         {
             this.Success = false;
-            this.StatusCode = 500;
+            this.StatusCode = StatusCode.Exception;
             this.DevMsg = ex.Message;
             this.UserMsg = Resources.ExceptionError;
         }

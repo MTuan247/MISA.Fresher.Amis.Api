@@ -28,5 +28,12 @@ namespace MISA.ApplicationCore.Interfaces
         /// Created by: NMTuan (02/08/2021)
         /// Modified by: NMTuan (02/08/2021)
         public EntitiesResponse<Employee> GetEntitiesFiltered(string employeeFilter, Guid? departmentId, int pageSize, int pageIndex);
+        /// <summary>
+        /// Hàm sửa nhiều bản ghi
+        /// </summary>
+        /// <param name="employees"></param>
+        /// <returns></returns>
+        /// Created by: NMTuan (31/08/2021)
+        public ServiceResult Update(Employee[] employees);
     }
 }

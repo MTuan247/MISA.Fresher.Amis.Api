@@ -1,4 +1,5 @@
-﻿using MISA.ApplicationCore.Interfaces;
+﻿using MISA.ApplicationCore.Enums;
+using MISA.ApplicationCore.Interfaces;
 using MISA.ApplicationCore.Models;
 using MISA.ApplicationCore.Utils;
 using System;
@@ -45,9 +46,19 @@ namespace MISA.ApplicationCore.Services
         /// Modified by: NMTuan (02/08/2021)
         public virtual TEntity GetEntityById(Guid entityId)
         {
-
             return _baseRepository.GetEntityById(entityId);
-
+        }
+        
+        /// <summary>
+        /// Hàm lấy bản ghi theo danh sách các id
+        /// </summary>
+        /// <param name="entityIds"></param>
+        /// <returns></returns>
+        /// CreatedBy: NMTuan (21/09/2021)
+        /// ModifiedBy: NMTuan (21/09/2021)
+        public virtual IEnumerable<TEntity> GetEntitiesByIds(Guid[] entitiesIds)
+        {
+            return _baseRepository.GetEntitiesByIds(entitiesIds);
         }
 
         /// <summary>
@@ -69,13 +80,13 @@ namespace MISA.ApplicationCore.Services
 
             if (res > 0)
             {
-                serviceResult.StatusCode = 201;
+                serviceResult.StatusCode = StatusCode.AddSuccess;
                 serviceResult.UserMsg = Properties.Resources.CreateSuccess;
                 serviceResult.Success = true;
             }
             else
             {
-                serviceResult.StatusCode = 500;
+                serviceResult.StatusCode = StatusCode.AddFail;
                 serviceResult.UserMsg = Properties.Resources.ExceptionError;
                 serviceResult.Success = false;
             }
@@ -105,13 +116,13 @@ namespace MISA.ApplicationCore.Services
 
             if (res > 0)
             {
-                serviceResult.StatusCode = 200;
+                serviceResult.StatusCode = StatusCode.UpdateSuccess;
                 serviceResult.Success = true;
                 serviceResult.UserMsg = Properties.Resources.UpdateSuccess;
             }
             else
             {
-                serviceResult.StatusCode = 200;
+                serviceResult.StatusCode = StatusCode.UpdateFail;
                 serviceResult.UserMsg = Properties.Resources.ExceptionError;
                 serviceResult.Success = false;
             }
@@ -130,32 +141,37 @@ namespace MISA.ApplicationCore.Services
             var res = _baseRepository.Delete(entityId);
             if (res > 0)
             {
-                serviceResult.StatusCode = 200;
+                serviceResult.StatusCode = StatusCode.DeleteSuccess;
                 serviceResult.Success = true;
                 serviceResult.UserMsg = Properties.Resources.DeleteSuccess;
             }
             else
             {
-                serviceResult.StatusCode = 200;
+                serviceResult.StatusCode = StatusCode.DeleteFail;
                 serviceResult.Success = false;
                 serviceResult.UserMsg = Properties.Resources.DeleteError;
             }
             return serviceResult;
         }
 
+        /// <summary>
+        /// Hàm xóa nhiều bản ghi
+        /// </summary>
+        /// <param name="entityIds">Danh sách id các bản ghi</param>
+        /// <returns></returns>
         public ServiceResult DeleteMultiple(Guid[] entityIds)
         {
             var res = _baseRepository.DeleteMultiple(entityIds);
 
             if (res > 0)
             {
-                serviceResult.StatusCode = 200;
+                serviceResult.StatusCode = StatusCode.DeleteSuccess;
                 serviceResult.Success = true;
                 serviceResult.UserMsg = Properties.Resources.DeleteSuccess;
             }
             else
             {
-                serviceResult.StatusCode = 500;
+                serviceResult.StatusCode = StatusCode.DeleteFail;
                 serviceResult.Success = false;
                 serviceResult.UserMsg = Properties.Resources.DeleteError;
             }
@@ -185,24 +201,13 @@ namespace MISA.ApplicationCore.Services
         }
 
         /// <summary>
-        /// Hàm check string có phải guid
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        /// Created by: NMTuan (02/08/2021)
-        /// Modified by: NMTuan (02/08/2021)
-        public bool IsGuid(string value)
-        {
-            Guid x;
-            return Guid.TryParse(value, out x);
-        }
-
-        /// <summary>
         /// Hàm validate
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        private bool Validate(TEntity entity)
+        /// Created by: NMTuan (02/08/2021)
+        /// Modified by: NMTuan (02/08/2021)
+        protected bool Validate(TEntity entity)
         {
             var isValidate = true;
             // Đọc các Property
@@ -242,7 +247,7 @@ namespace MISA.ApplicationCore.Services
                     if (propertyValue == null || string.IsNullOrEmpty(propertyValue.ToString()))
                     {
                         serviceResult.Success = false;
-                        serviceResult.StatusCode = 200;
+                        serviceResult.StatusCode = StatusCode.ValidateCode;
                         serviceResult.UserMsg = displayName + Properties.Resources.ValidateError_FieldEmpty;
                         serviceResult.Data = propName;
                         isValidate = false;
@@ -253,7 +258,7 @@ namespace MISA.ApplicationCore.Services
                 {
                     if (propertyValue == null || propertyValue.ToString() == string.Empty)
                     {
-                        return true;
+                        continue;
                     }
                 }
 
@@ -266,7 +271,7 @@ namespace MISA.ApplicationCore.Services
                     if (entitiesDuplicate.Count() > 0)
                     {
                         serviceResult.Success = false;
-                        serviceResult.StatusCode = 200;
+                        serviceResult.StatusCode = StatusCode.ValidateCode;
                         serviceResult.UserMsg = string.Format(Properties.Resources.ValidateError_FieldDuplicate, displayName, propertyValue);
                         serviceResult.Data = propName;
                         return false;
@@ -282,7 +287,7 @@ namespace MISA.ApplicationCore.Services
                     if (propertyValue.ToString().Length > propertyMaxLength)
                     {
                         serviceResult.Success = false;
-                        serviceResult.StatusCode = 200;
+                        serviceResult.StatusCode = StatusCode.ValidateCode;
                         serviceResult.UserMsg = string.Format(Properties.Resources.ValidateError_FieldMaxLength, displayName, propertyMaxLength);
                         serviceResult.Data = propName;
                         return false;
@@ -304,6 +309,8 @@ namespace MISA.ApplicationCore.Services
         /// Hàm validate custom
         /// </summary>
         /// <returns></returns>
+        /// Created by: NMTuan (02/08/2021)
+        /// Modified by: NMTuan (02/08/2021)
         public virtual bool ValidateCustom()
         {
             return true;

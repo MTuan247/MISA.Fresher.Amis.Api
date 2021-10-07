@@ -51,13 +51,13 @@ namespace MISA.ApplicationCore.Models
                 switch (this.Gender)
                 {
                     case Enums.Gender.Male:
-                        name = "Nam";
+                        name = Properties.Resources.Male;
                         break;
                     case Enums.Gender.Female:
-                        name = "Nữ";
+                        name = Properties.Resources.Female;
                         break;
                     case Enums.Gender.Other:
-                        name = "Không xác định";
+                        name = Properties.Resources.Other;
                         break;
                     default:
                         break;

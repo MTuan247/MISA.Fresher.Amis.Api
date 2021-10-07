@@ -32,6 +32,14 @@ namespace MISA.ApplicationCore.Interfaces
         /// Modified by: NMTuan (02/08/2021)
         TEntity GetEntityById(Guid entityId);
         /// <summary>
+        /// Hàm lấy bản ghi theo danh sách các id
+        /// </summary>
+        /// <param name="entityIds"></param>
+        /// <returns></returns>
+        /// CreatedBy: NMTuan (21/09/2021)
+        /// ModifiedBy: NMTuan (21/09/2021)
+        IEnumerable<TEntity> GetEntitiesByIds(Guid[] entityIds);
+        /// <summary>
         /// Lấy entity theo code
         /// </summary>
         /// <param name="entityCode"></param>
@@ -70,7 +78,11 @@ namespace MISA.ApplicationCore.Interfaces
         /// Created by: NMTuan (02/08/2021)
         /// Modified by: NMTuan (02/08/2021)
         int Delete(Guid entityId);
-
+        /// <summary>
+        /// Xóa nhiều
+        /// </summary>
+        /// <param name="entityIds"></param>
+        /// <returns></returns>
         int DeleteMultiple(Guid[] entityIds);
     }
 }

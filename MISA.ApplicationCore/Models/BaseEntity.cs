@@ -78,6 +78,15 @@ namespace MISA.ApplicationCore.Models
     {
 
     }
+
+    /// <summary>
+    /// Attribute không map giá trị trong thêm vào dynamic parameters
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    public class MISAOverMapping : Attribute
+    {
+
+    }
     #endregion
 
     public class BaseEntity
@@ -90,19 +99,20 @@ namespace MISA.ApplicationCore.Models
         /// <summary>
         /// Ngày tạo
         /// </summary>
-        public DateTime CreatedDate { get; set; }
+        #nullable enable
+        public DateTime? CreatedDate { get; set; }
         /// <summary>
         /// Người tạo
         /// </summary>
-        public string CreatedBy { get; set; }
+        public string? CreatedBy { get; set; }
         /// <summary>
         /// Ngày chỉnh sửa
         /// </summary>
-        public DateTime ModifiedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
         /// <summary>
         /// Người chỉnh sửa
         /// </summary>
-        public string ModifiedBy { get; set; }
+        public string? ModifiedBy { get; set; }
         #endregion
 
     }

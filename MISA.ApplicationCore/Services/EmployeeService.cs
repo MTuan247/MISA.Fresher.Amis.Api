@@ -54,7 +54,7 @@ namespace MISA.ApplicationCore.Services
             // Kiểm tra id trong body và router có trùng
             if(employeeId != employee.EmployeeId || string.IsNullOrEmpty(employee.EmployeeId.ToString()))
             {
-                serviceResult.StatusCode = 200;
+                serviceResult.StatusCode = StatusCode.ValidateCode;
                 serviceResult.Success = false;
                 serviceResult.UserMsg = Properties.Resources.ValidateError_EmployeeIdNotMatch;
                 return serviceResult;
@@ -73,6 +73,38 @@ namespace MISA.ApplicationCore.Services
             return _employeeRepository.GetNewEmployeeCode();
         }
 
+        /// <summary>
+        /// Hàm sửa nhiều bản ghi
+        /// </summary>
+        /// <param name="employees"></param>
+        /// <returns></returns>
+        /// Created by: NMTuan (31/08/2021)
+        /// Modified by: NMTuan (31/08/2021)
+        public ServiceResult Update(Employee[] employees) 
+        {
+            foreach (var employee in employees)
+            {
+                employee.EntityState = EntityState.Update;
+                if (!Validate(employee))
+                {
+                    return serviceResult;
+                }
+            }
+            var res = _employeeRepository.UpdateMultiple(employees);
+            if (res > 0)
+            {
+                serviceResult.StatusCode = StatusCode.UpdateSuccess;
+                serviceResult.Success = true;
+                serviceResult.UserMsg = Properties.Resources.UpdateSuccess;
+            }
+            else
+            {
+                serviceResult.StatusCode = StatusCode.UpdateFail;
+                serviceResult.UserMsg = Properties.Resources.ExceptionError;
+                serviceResult.Success = false;
+            }
+            return serviceResult;
+        }
         #endregion
     }
 }

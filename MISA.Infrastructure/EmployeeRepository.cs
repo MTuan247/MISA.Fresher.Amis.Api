@@ -76,6 +76,70 @@ namespace MISA.Infrastructure
 
             return newCode;
         }
+
+        /// <summary>
+        /// Hàm sửa nhiều bản ghi
+        /// </summary>
+        /// <param name="employees"></param>
+        /// <returns></returns>
+        /// Created by: NMTuan (31/08/2021)
+        /// Modified by: NMTuan (01/09/2021)
+        public int UpdateMultiple(Employee[] employees)
+        {
+            var properties = new String[] {"EmployeeId", "EmployeeCode", "EmployeeName", "DateOfBirth", "Gender",
+                "DepartmentId", "IdentityNumber", "IdentityDate", "IdentityPlace", "EmployeePosition",
+                "Address", "BankAccountNumber", "BankName", "BankBranchName", "BankProvinceName",
+                "PhoneNumber", "TelephoneNumber", "Email", "ModifiedBy", "ModifiedDate" };
+            DynamicParameters parameters = new DynamicParameters();
+            var sql = $"INSERT INTO Employee" +
+                $"(EmployeeId, EmployeeCode, EmployeeName, DateOfBirth, Gender, " +
+                $"DepartmentId, IdentityNumber, IdentityDate, IdentityPlace, EmployeePosition, " +
+                $"Address, BankAccountNumber, BankName, BankBranchName, BankProvinceName, " +
+                $"PhoneNumber, TelephoneNumber, Email, ModifiedBy, ModifiedDate)" +
+                $"VALUES ";
+
+            for (var index = 0; index < employees.Length; index++)
+            {
+                sql += $"(@EmployeeId{index}, @EmployeeCode{index}, @EmployeeName{index}, @DateOfBirth{index}, @Gender{index}, " +
+                $"@DepartmentId{index}, @IdentityNumber{index}, @IdentityDate{index}, @IdentityPlace{index}, @EmployeePosition{index}, " +
+                $"@Address{index}, @BankAccountNumber{index}, @BankName{index}, @BankBranchName{index}, @BankProvinceName{index}, " +
+                $"@PhoneNumber{index}, @TelephoneNumber{index}, @Email{index}, @ModifiedBy{index}, NOW())";
+                if (index == employees.Length - 1)
+                {
+                    sql += $" ";
+                } 
+                else
+                {
+                    sql += $", ";
+                }
+                parameters = MappingObtype(employees[index], parameters, index);
+            }
+
+            sql += $"ON DUPLICATE KEY UPDATE ";
+            for (var index = 0; index < properties.Length; index++)
+            {
+                var property = properties[index];
+                sql += property + " = VALUES(" + property + ")";
+                if (index == properties.Length - 1)
+                {
+                    sql += $";";
+                }
+                else
+                {
+                    sql += $", ";
+                }
+            }
+
+            _dbConnection.Open();
+            using (var transaction = _dbConnection.BeginTransaction())
+            {
+                var res = _dbConnection.Execute(sql, parameters, transaction: transaction);
+
+                transaction.Commit();
+
+                return res;
+            }
+        }
         #endregion
     }
 }

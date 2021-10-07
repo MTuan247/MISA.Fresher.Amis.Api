@@ -129,8 +129,17 @@
   <data name="ExceptionError" xml:space="preserve">
     <value>Có lỗi xảy ra! Vui lòng liên hệ Misa</value>
   </data>
+  <data name="Female" xml:space="preserve">
+    <value>Nữ</value>
+  </data>
+  <data name="Male" xml:space="preserve">
+    <value>Nam</value>
+  </data>
   <data name="NoContent" xml:space="preserve">
     <value>Không có dữ liệu trả về!</value>
+  </data>
+  <data name="Other" xml:space="preserve">
+    <value>Khác</value>
   </data>
   <data name="UpdateSuccess" xml:space="preserve">
     <value>Cập nhật thông tin thành công</value>
@@ -145,7 +154,7 @@
     <value>ID nhân viên không trùng khớp</value>
   </data>
   <data name="ValidateError_FieldDuplicate" xml:space="preserve">
-    <value>{0} &lt;{1}&gt; đã tồn tại trên hệ thống, vui lòng kiểm tra lại.</value>
+    <value>{0} &amp;lt;{1}&amp;gt; đã tồn tại trên hệ thống, vui lòng kiểm tra lại.</value>
   </data>
   <data name="ValidateError_FieldEmpty" xml:space="preserve">
     <value> không được phép để trống!</value>

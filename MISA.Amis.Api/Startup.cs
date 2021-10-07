@@ -39,7 +39,7 @@ namespace MISA.Amis.Api
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MISA.CukCuk.Api", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MISA.Amis.Api", Version = "v1" });
             });
 
             services.AddControllers().AddNewtonsoftJson(jsonOptions => {
@@ -55,6 +55,8 @@ namespace MISA.Amis.Api
             services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<ITaxService, TaxService>();
+            services.AddScoped<ITaxRepository, TaxRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,7 +66,7 @@ namespace MISA.Amis.Api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MISA.CukCuk.Api v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MISA.Amis.Api v1"));
             }
 
             app.UseCors("AllowAccess_To_API");

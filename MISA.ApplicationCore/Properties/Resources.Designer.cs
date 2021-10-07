@@ -97,11 +97,38 @@ namespace MISA.ApplicationCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Nữ.
+        /// </summary>
+        public static string Female {
+            get {
+                return ResourceManager.GetString("Female", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nam.
+        /// </summary>
+        public static string Male {
+            get {
+                return ResourceManager.GetString("Male", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Không có dữ liệu trả về!.
         /// </summary>
         public static string NoContent {
             get {
                 return ResourceManager.GetString("NoContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Khác.
+        /// </summary>
+        public static string Other {
+            get {
+                return ResourceManager.GetString("Other", resourceCulture);
             }
         }
         
@@ -142,7 +169,7 @@ namespace MISA.ApplicationCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} &lt;{1}&gt; đã tồn tại trên hệ thống, vui lòng kiểm tra lại..
+        ///   Looks up a localized string similar to {0} &amp;lt;{1}&amp;gt; đã tồn tại trên hệ thống, vui lòng kiểm tra lại..
         /// </summary>
         public static string ValidateError_FieldDuplicate {
             get {

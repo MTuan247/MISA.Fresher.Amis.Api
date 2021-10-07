@@ -74,6 +74,28 @@ namespace MISA.Amis.Api.Controllers
         }
 
         /// <summary>
+        /// Hàm lấy bản ghi theo danh sách các id
+        /// </summary>
+        /// <param name="entityIds"></param>
+        /// <returns></returns>
+        /// CreatedBy: NMTuan (21/09/2021)
+        /// ModifiedBy: NMTuan (21/09/2021)
+        [HttpPost("multipleId")]
+        public virtual IActionResult Get([FromBody] Guid[] ids)
+        {
+            try
+            {
+                var entities = _baseService.GetEntitiesByIds(ids);
+                return Ok(entities);
+            }
+            catch (Exception ex)
+            {
+                serviceResult.ExceptionHandle(ex);
+                return StatusCode(500, serviceResult);
+            }
+        }
+
+        /// <summary>
         /// Method post thêm dữ liệu
         /// </summary>
         /// <param name="entity"></param>
@@ -86,7 +108,7 @@ namespace MISA.Amis.Api.Controllers
             try
             {
                 var res = _baseService.Add(entity);
-                return StatusCode(res.StatusCode, res);
+                return StatusCode((int) res.StatusCode, res);
             }
             catch (Exception ex)
             {
@@ -109,7 +131,7 @@ namespace MISA.Amis.Api.Controllers
             try
             {
                 var res = _baseService.Update(id, entity);
-                return StatusCode(res.StatusCode, res);
+                return StatusCode((int) res.StatusCode, res);
             }
             catch (Exception ex)
             {
@@ -132,7 +154,7 @@ namespace MISA.Amis.Api.Controllers
             try
             {
                 var result = _baseService.Delete(id);
-                return StatusCode(result.StatusCode, result);
+                return StatusCode((int) result.StatusCode, result);
             }
             catch (Exception ex)
             {
@@ -143,13 +165,20 @@ namespace MISA.Amis.Api.Controllers
 
         }
 
+        /// <summary>
+        /// Hàm xóa nhiều bản ghi
+        /// </summary>
+        /// <param name="entityIds"></param>
+        /// <returns></returns>
+        /// Created by: NMTuan (17/08/2021)
+        /// Modified by: NMTuan (17/08/2021)
         [HttpDelete("multiple")]
         public virtual IActionResult DeleteMultiple([FromBody] Guid[] entityIds)
         {
             try
             {
                 var result = _baseService.DeleteMultiple(entityIds);
-                return StatusCode(result.StatusCode, result);
+                return StatusCode((int) result.StatusCode, result);
             }
             catch (Exception ex)
             {

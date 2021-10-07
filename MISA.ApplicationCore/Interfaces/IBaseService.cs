@@ -25,6 +25,14 @@ namespace MISA.ApplicationCore.Interfaces
         /// Modified by: NMTuan (02/08/2021)
         TEntity GetEntityById(Guid entityId);
         /// <summary>
+        /// Hàm lấy bản ghi theo danh sách các id
+        /// </summary>
+        /// <param name="entityIds"></param>
+        /// <returns></returns>
+        /// CreatedBy: NMTuan (21/09/2021)
+        /// ModifiedBy: NMTuan (21/09/2021)
+        IEnumerable<TEntity> GetEntitiesByIds(Guid[] entitiesIds);
+        /// <summary>
         /// Hàm thêm dữ liệu
         /// </summary>
         /// <param name="entity"></param>

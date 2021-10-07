@@ -70,7 +70,7 @@ namespace MISA.Amis.Api.Controllers
         /// <returns></returns>
         /// Created by: NMTuan (02/08/2021)
         /// Modified by: NMTuan (02/08/2021)
-        [HttpGet("NewEmployeeCode")]
+        [HttpGet("newCode")]
         public IActionResult GetNewEmployeeCode()
         {
             try
@@ -85,8 +85,27 @@ namespace MISA.Amis.Api.Controllers
             }
 
         }
+
+        /// <summary>
+        /// Method sửa nhiều bản ghi
+        /// </summary>
+        /// <param name="employees"></param>
+        /// <returns></returns>
+        /// Created by: NMTuan (31/08/2021)
+        [HttpPut("Multiple")]
+        public IActionResult Update([FromBody] Employee[] employees)
+        {
+            try
+            {
+                var res = _employeeService.Update(employees);
+                return StatusCode((int)res.StatusCode, res);
+            }
+            catch (Exception ex)
+            {
+                serviceResult.ExceptionHandle(ex);
+                return StatusCode(500, serviceResult);
+            }
+        }
         #endregion
-
-
     }
 }
